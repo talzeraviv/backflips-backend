@@ -2,6 +2,7 @@ import express from "express";
 import { isAuth } from "../utils/jwt.js";
 import Content from "../models/ContentModel.js";
 import expressAsyncHandler from "express-async-handler";
+import FeaturedContent from "../models/FeaturedContentModel.js";
 
 export const contentRouter = express.Router();
 
@@ -55,6 +56,22 @@ contentRouter.get(
       countContent,
       pages: Math.ceil(countContent / pageSize),
     });
+  })
+);
+
+contentRouter.get(
+  "/random",
+  expressAsyncHandler(async (req, res) => {
+    const content = await Content.aggregate([{ $sample: { size: 1 } }]);
+    res.send(content[0]);
+  })
+);
+
+contentRouter.get(
+  "/featured",
+  expressAsyncHandler(async (req, res) => {
+    const content = await FeaturedContent.find().populate("contentList").exec();
+    res.send(content);
   })
 );
 
