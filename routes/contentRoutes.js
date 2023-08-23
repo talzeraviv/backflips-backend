@@ -8,7 +8,7 @@ export const contentRouter = express.Router();
 
 contentRouter.get(
   "/",
-  isAuth,
+  // isAuth,
   expressAsyncHandler(async (req, res) => {
     const content = await Content.find();
     res.send(content);
@@ -29,7 +29,7 @@ contentRouter.get(
 
 contentRouter.get(
   "/search",
-  isAuth,
+  // isAuth,
   expressAsyncHandler(async (req, res) => {
     const PAGE_SIZE = 10;
 
@@ -63,7 +63,7 @@ contentRouter.get(
 
 contentRouter.get(
   "/random",
-  isAuth,
+  // isAuth,
   expressAsyncHandler(async (req, res) => {
     const content = await Content.aggregate([{ $sample: { size: 1 } }]);
     res.send(content[0]);
@@ -72,7 +72,7 @@ contentRouter.get(
 
 contentRouter.get(
   "/featured",
-  isAuth,
+  // isAuth,
   expressAsyncHandler(async (req, res) => {
     const content = await FeaturedContent.find().populate("contentList").exec();
     res.send(content);
