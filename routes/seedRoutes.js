@@ -1,4 +1,5 @@
 import express from "express";
+import { isAuth } from "../utils/jwt.js";
 import {
   data,
   genres,
@@ -11,7 +12,7 @@ import FeaturedContent from "../models/FeaturedContentModel.js";
 
 export const seedRouter = express.Router();
 
-seedRouter.get("/", async (req, res) => {
+seedRouter.get("/", isAuth, async (req, res) => {
   try {
     await Content.deleteMany({}); //delete by filtering
     await User.deleteMany({}); //delete by filtering

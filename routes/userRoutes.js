@@ -9,11 +9,11 @@ const userRouter = express.Router();
 userRouter.post(
   "/signin",
   expressAsyncHandler(async (req, res) => {
-    const user = identifier.includes("@")
-      ? await User.findOne({ email: identifier })
-      : await User.findOne({ username: identifier });
+    const { email, password } = req.body;
+    const user = await User.findOne({ email: email });
+
     if (user) {
-      if (bcrypt.compareSync(req.body.password, user.password)) {
+      if (bcrypt.compareSync(password, user.password)) {
         res.send({
           _id: user._id,
           username: user.username,
