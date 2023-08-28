@@ -5,6 +5,7 @@ import expressAsyncHandler from "express-async-handler";
 import FeaturedContent from "../models/FeaturedContentModel.js";
 
 export const contentRouter = express.Router();
+const PAGE_SIZE = 10;
 
 contentRouter.get(
   "/",
@@ -28,13 +29,18 @@ contentRouter.get(
 );
 
 contentRouter.get(
-  "/search",
-  // isAuth,
+  "/genres",
   expressAsyncHandler(async (req, res) => {
-    const PAGE_SIZE = 10;
+    const genres = await Content.find().distinct("genre");
+    res.send(genres);
+  })
+);
 
+contentRouter.get(
+  "/search",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
     const { query } = req;
-
     const pageSize = PAGE_SIZE;
     const page = query.page || 1;
     const searchQuery = query.query || "";
@@ -42,20 +48,19 @@ contentRouter.get(
     const queryFilter = searchQuery
       ? { title: { $regex: searchQuery, $options: "i" } }
       : {};
-
-    const content = await Content.find({
+    const contents = await Content.find({
       ...queryFilter,
     })
       .skip((page - 1) * pageSize)
       .limit(pageSize);
-
     const countContent = await Content.countDocuments({
       ...queryFilter,
     });
+
     res.send({
-      content,
+      contents,
       page,
-      countContent,
+      countContent: countContent,
       pages: Math.ceil(countContent / pageSize),
     });
   })
