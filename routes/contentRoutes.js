@@ -86,6 +86,17 @@ contentRouter.get(
     res.send(movie[0]);
   })
 );
+contentRouter.get(
+  "/series",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const serie = await Content.aggregate([
+      { $match: { isSeries: true } },
+      { $sample: { size: 1 } },
+    ]);
+    res.send(serie[0]);
+  })
+);
 
 contentRouter.get(
   "/featured",
