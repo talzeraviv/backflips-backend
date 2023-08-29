@@ -73,10 +73,11 @@ contentRouter.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { type } = req.params;
+    console.log(type);
     const content = await Content.aggregate([
       type === "all"
         ? { $sample: { size: 1 } }
-        : { $match: { isSeries: type === "series" ? true : false } },
+        : { $match: { isSeries: type === "Series" ? true : false } },
       { $sample: { size: 1 } },
     ]);
     res.send(content[0]);
@@ -90,7 +91,7 @@ contentRouter.get(
     const { type } = req.params;
     // Process the filter parameter and retrieve data accordingly
     const content = await FeaturedContent.find(
-      type === "All" ? {} : { type: type }
+      type === "all" ? {} : { type: type }
     )
       .populate("contentList")
       .exec();
