@@ -17,13 +17,13 @@ contentRouter.get(
 );
 
 contentRouter.get(
-  "/id/:id",
+  "/watch",
   expressAsyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const contentById = await Content.findById(id);
+    const { id } = req.query; // Get the ID from the query parameter
+    const requestedContent = await Content.findById(id);
 
-    contentById
-      ? res.send(contentById)
+    requestedContent
+      ? res.send(requestedContent)
       : res.status(404).send({ message: "Content not found" });
   })
 );
@@ -99,7 +99,7 @@ contentRouter.get(
 );
 
 contentRouter.get(
-  "/featured",
+  "/featured/random",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const content = await FeaturedContent.find().populate("contentList").exec();
