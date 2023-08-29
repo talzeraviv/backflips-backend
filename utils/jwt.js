@@ -14,7 +14,6 @@ export const generateToken = (user) => {
 
 export const isAuth = (req, res, next) => {
   const token = req.headers.authorization;
-  console.log(req.headers.authorization);
   if (token) {
     jwt.verify(token, process.env.JWT_PASS, (err, decoded) => {
       if (err) {

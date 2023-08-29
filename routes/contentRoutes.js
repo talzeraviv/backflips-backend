@@ -9,7 +9,7 @@ const PAGE_SIZE = 10;
 
 contentRouter.get(
   "/",
-  // isAuth,
+  isAuth,
   expressAsyncHandler(async (req, res) => {
     const content = await Content.find();
     res.send(content);
@@ -18,6 +18,7 @@ contentRouter.get(
 
 contentRouter.get(
   "/watch",
+  isAuth,
   expressAsyncHandler(async (req, res) => {
     const { id } = req.query; // Get the ID from the query parameter
     const requestedContent = await Content.findById(id);
@@ -30,6 +31,7 @@ contentRouter.get(
 
 contentRouter.get(
   "/genres",
+  isAuth,
   expressAsyncHandler(async (req, res) => {
     const genres = await Content.find().distinct("genre");
     res.send(genres);
@@ -67,64 +69,33 @@ contentRouter.get(
 );
 
 contentRouter.get(
-  "/random",
+  "/:type",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const content = await Content.aggregate([{ $sample: { size: 1 } }]);
+    const { type } = req.params;
+    const content = await Content.aggregate([
+      type === "all"
+        ? { $sample: { size: 1 } }
+        : { $match: { isSeries: type === "series" ? true : false } },
+      { $sample: { size: 1 } },
+    ]);
     res.send(content[0]);
   })
 );
 
 contentRouter.get(
-  "/movies",
+  "/featured/:type",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const movie = await Content.aggregate([
-      { $match: { isSeries: false } },
-      { $sample: { size: 1 } },
-    ]);
-    res.send(movie[0]);
-  })
-);
-contentRouter.get(
-  "/series",
-  isAuth,
-  expressAsyncHandler(async (req, res) => {
-    const serie = await Content.aggregate([
-      { $match: { isSeries: true } },
-      { $sample: { size: 1 } },
-    ]);
-    res.send(serie[0]);
-  })
-);
-
-contentRouter.get(
-  "/featured/random",
-  isAuth,
-  expressAsyncHandler(async (req, res) => {
-    const content = await FeaturedContent.find().populate("contentList").exec();
-    res.send(content);
-  })
-);
-
-contentRouter.get(
-  "/featured/movies",
-  // isAuth,
-  expressAsyncHandler(async (req, res) => {
-    const content = await FeaturedContent.find({ type: "Movie" })
+    const { type } = req.params;
+    // Process the filter parameter and retrieve data accordingly
+    const content = await FeaturedContent.find(
+      type === "All" ? {} : { type: type }
+    )
       .populate("contentList")
       .exec();
-    res.send(content);
-  })
-);
-contentRouter.get(
-  "/featured/series",
-  // isAuth,
-  expressAsyncHandler(async (req, res) => {
-    const content = await FeaturedContent.find({ type: "Serie" })
-      .populate("contentList")
-      .exec();
-    res.send(content);
+
+    return res.status(200).send(content);
   })
 );
 
