@@ -50,6 +50,26 @@ userRouter.post(
   })
 );
 
+userRouter.post(
+  "/list",
+  expressAsyncHandler(async (req, res) => {
+    const { id, content } = req.body;
+
+    const user = await User.findById(id);
+    console.log(user);
+    let newList = user.myFavouriteList ? [...user.myFavouriteList] : [];
+    const contentIndex = user.myFavouriteList.indexOf(content);
+    if (contentIndex === -1) {
+      newList.push(content);
+    } else {
+      newList.splice(contentIndex, 1);
+    }
+    user.myFavouriteList = newList;
+    await user.save();
+    return res.send(newList);
+  })
+);
+
 userRouter.get("/", isAuth, async (req, res) => {
   res.status(200).send({ message: "Ok" });
 });
