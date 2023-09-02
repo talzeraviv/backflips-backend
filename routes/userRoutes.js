@@ -56,9 +56,10 @@ userRouter.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const userId = req.user._id;
-    console.log(req.user);
 
-    const currUser = await User.findById(userId);
+    const currUser = await User.findById(userId)
+      .populate("myFavouriteList")
+      .exec();
     if (!currUser) {
       return res
         .status(404)
