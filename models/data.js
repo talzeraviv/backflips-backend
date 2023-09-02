@@ -10,10 +10,10 @@ export const genres = [
 
 export const listMovieNames = [
   "Top picks for Movie",
-  "Movies for your friend Steve",
+  "Throwback Movies",
   "Kid-Friendly Movies",
   "Action Movies",
-  "Documentariy Movies",
+  "Documentary Movies",
   "Classic Movies",
 ];
 export const listSeriesNames = [
