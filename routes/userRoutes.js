@@ -52,9 +52,11 @@ userRouter.post(
 );
 
 userRouter.get(
-  "/list/:userId",
+  "/list",
+  isAuth,
   expressAsyncHandler(async (req, res) => {
-    const { userId } = req.params;
+    const userId = req.user._id;
+    console.log(req.user);
 
     const currUser = await User.findById(userId);
     if (!currUser) {

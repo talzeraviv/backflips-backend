@@ -19,7 +19,7 @@ export const isAuth = (req, res, next) => {
       if (err) {
         return res
           .status(401)
-          .json({ message: "Invalid username or password" });
+          .json({ message: `Invalid username or password (${err.message}).` });
       }
       req.user = decoded;
       next();

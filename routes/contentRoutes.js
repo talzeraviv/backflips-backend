@@ -39,7 +39,7 @@ contentRouter.get(
 
 contentRouter.get(
   "/search",
-  // isAuth,
+  isAuth,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const searchQuery = query.q || "";
