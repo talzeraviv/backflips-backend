@@ -66,7 +66,9 @@ userRouter.get(
         .send({ message: `User with ID ${userId} not found.` });
     }
 
-    res.status(200).send({ favouritesList: currUser.myFavouriteList });
+    console.log("test", currUser.myFavouriteList);
+
+    res.status(200).send({ content: currUser.myFavouriteList });
   })
 );
 
