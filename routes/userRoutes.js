@@ -68,7 +68,9 @@ userRouter.get(
 
     console.log("test", currUser.myFavouriteList);
 
-    res.status(200).send({ content: currUser.myFavouriteList });
+    res
+      .status(200)
+      .send([{ name: "My List", contentList: currUser.myFavouriteList }]);
   })
 );
 
@@ -94,6 +96,7 @@ userRouter.post(
     });
   })
 );
+
 userRouter.delete(
   "/list",
   expressAsyncHandler(async (req, res) => {
