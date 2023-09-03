@@ -66,8 +66,6 @@ userRouter.get(
         .send({ message: `User with ID ${userId} not found.` });
     }
 
-    console.log("test", currUser.myFavouriteList);
-
     res
       .status(200)
       .send([{ name: "My List", contentList: currUser.myFavouriteList }]);
@@ -76,8 +74,9 @@ userRouter.get(
 
 userRouter.post(
   "/list",
+  isAuth,
   expressAsyncHandler(async (req, res) => {
-    const { userId, contentId } = req.body;
+    const userId = req.user._id;
 
     const IsValidContent = await Content.findById(contentId);
     const currUser = await User.findById(userId);
@@ -99,8 +98,10 @@ userRouter.post(
 
 userRouter.delete(
   "/list",
+  isAuth,
   expressAsyncHandler(async (req, res) => {
-    const { userId, contentId } = req.body;
+    const userId = req.user._id;
+    const { contentId } = req.body;
 
     const currUser = await User.findById(userId);
     try {

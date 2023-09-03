@@ -3,6 +3,7 @@ import { isAuth } from "../utils/jwt.js";
 import Content from "../models/ContentModel.js";
 import expressAsyncHandler from "express-async-handler";
 import FeaturedContent from "../models/FeaturedContentModel.js";
+import shuffleArray from "../utils/arrayShuffler.js";
 
 export const contentRouter = express.Router();
 
@@ -68,13 +69,13 @@ contentRouter.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { type } = req.params;
-    console.log(type);
     const content = await Content.aggregate([
       type === "all"
         ? { $sample: { size: 1 } }
-        : { $match: { isSeries: type === "Series" ? true : false } },
+        : { $match: { isSeries: type === "Serie" ? true : false } },
       { $sample: { size: 1 } },
     ]);
+    console.log("Reached " + type + " request.");
     res.send(content[0]);
   })
 );
@@ -90,6 +91,8 @@ contentRouter.get(
     )
       .populate("contentList")
       .exec();
+
+    shuffleArray(content);
 
     return res.status(200).send(content);
   })

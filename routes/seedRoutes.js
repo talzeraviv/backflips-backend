@@ -46,7 +46,7 @@ const getRandomContent = async (nameArray, contentType) => {
   for (let i = 0; i < nameArray.length; i++) {
     const selectedContent = await Content.aggregate([
       { $match: { isSeries: isSeries } },
-      { $sample: { size: 8 } },
+      { $sample: { size: 12 } },
     ]);
 
     const contentToInsert = new FeaturedContent({
