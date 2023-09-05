@@ -14,12 +14,14 @@ userRouter.post(
     const user = await User.findOne({ email: email });
 
     if (user) {
+      await user.populate("myFavouriteList");
       if (bcrypt.compareSync(password, user.password)) {
         res.send({
           _id: user._id,
           username: user.username,
           email: user.email,
           token: generateToken(user),
+          myList: user.myFavouriteList,
         });
         return;
       }
@@ -39,14 +41,16 @@ userRouter.post(
         password: bcrypt.hashSync(password, 10),
       });
       const user = await newUser.save();
+      await user.populate("myFavouriteList");
       res.send({
         _id: user._id,
         username: user.username,
         email: user.email,
         token: generateToken(user),
+        myList: user.myFavouriteList,
       });
     } catch (error) {
-      res.status(400).send({ message: "email already in database" });
+      res.status(400).send({ message: "E-Mail already in database" });
     }
   })
 );
@@ -77,6 +81,7 @@ userRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const userId = req.user._id;
+    const { contentId } = req.body;
 
     const IsValidContent = await Content.findById(contentId);
     const currUser = await User.findById(userId);
