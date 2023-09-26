@@ -72,7 +72,9 @@ userRouter.get(
 
     res
       .status(200)
-      .send([{ name: "My List", contentList: currUser.myFavouriteList }]);
+      .send([
+        { _id: userId, name: "My List", contentList: currUser.myFavouriteList },
+      ]);
   })
 );
 
@@ -106,7 +108,8 @@ userRouter.delete(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const userId = req.user._id;
-    const { contentId } = req.body;
+    const { contentId } = req.query;
+    console.log(contentId);
 
     const currUser = await User.findById(userId);
     try {
